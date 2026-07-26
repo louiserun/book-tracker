@@ -1,0 +1,42 @@
+<div class="book-lookup">
+  <h2>Rechercher un livre</h2>
+
+  <div class="search-bar">
+    <input
+      type="text"
+      placeholder="Titre, auteur ou ISBN..."
+      [ngModel]="query()"
+      (ngModelChange)="query.set($event)"
+      (keyup.enter)="search()"
+    />
+    <button (click)="search()">Rechercher</button>
+  </div>
+
+  @if (loading()) {
+    <p class="status">Recherche en cours...</p>
+  }
+
+  @if (!loading() && results().length === 0 && query()) {
+    <p class="status">Aucun résultat. Tu peux ajouter ce livre manuellement plus tard.</p>
+  }
+
+  @if (error()) {
+    <p class="status error">{{ error() }}</p>
+  }
+
+  <div class="results">
+    @for (result of results(); track result.id) {
+      <div class="result-item">
+        <img
+          [src]="result.volumeInfo.imageLinks?.thumbnail || 'assets/placeholder-cover.png'"
+          alt=""
+        />
+        <div class="result-info">
+          <h3>{{ result.volumeInfo.title }}</h3>
+          <p>{{ result.volumeInfo.authors?.join(', ') || 'Auteur inconnu' }}</p>
+          <button (click)="addToLibrary(result)">+ Ajouter</button>
+        </div>
+      </div>
+    }
+  </div>
+</div>
