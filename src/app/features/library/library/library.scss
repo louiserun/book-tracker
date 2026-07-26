@@ -1,0 +1,91 @@
+.library {
+  padding: 1rem;
+  max-width: 600px;
+  margin: 0 auto;
+
+  h1 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+}
+
+.tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+
+  button {
+    flex: 1;
+    padding: 0.6rem 0.5rem;
+    border: none;
+    border-radius: 8px;
+    background: #eee;
+    color: #333;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.15s ease;
+
+    &.active {
+      background: #2c5f7c;
+      color: white;
+      font-weight: 600;
+    }
+
+    &:hover:not(.active) {
+      background: #ddd;
+    }
+  }
+}
+
+.empty {
+  text-align: center;
+  color: #888;
+  margin-top: 2rem;
+}
+
+.book-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.book-card {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.5rem;
+  border: 1px solid #eee;
+  border-radius: 8px;
+
+  img {
+    width: 60px;
+    height: 90px;
+    object-fit: cover;
+    border-radius: 4px;
+    background: #ddd;
+    flex-shrink: 0;
+  }
+}
+
+.book-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  h3 {
+    font-size: 1rem;
+    margin: 0 0 0.25rem;
+  }
+
+  p {
+    font-size: 0.85rem;
+    color: #666;
+    margin: 0;
+  }
+
+  .days-in-pal {
+    margin-top: 0.35rem;
+    font-size: 0.75rem;
+    color: #b5651d;
+    font-weight: 600;
+  }
+}
