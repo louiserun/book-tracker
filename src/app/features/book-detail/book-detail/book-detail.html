@@ -1,0 +1,109 @@
+<div class="book-detail">
+  <button class="back" (click)="cancel()">&larr; Retour</button>
+
+  @if (!draft()) {
+    <p>Chargement...</p>
+  } @else {
+    <div class="cover-section">
+      <img [src]="draft()!.coverUrl || 'assets/placeholder-cover.png'" alt="" />
+      <input
+        type="text"
+        placeholder="URL de la couverture"
+        [ngModel]="draft()!.coverUrl"
+        (ngModelChange)="updateField('coverUrl', $event)"
+      />
+    </div>
+
+    <input
+      class="title-input"
+      type="text"
+      placeholder="Titre"
+      [ngModel]="draft()!.title"
+      (ngModelChange)="updateField('title', $event)"
+    />
+
+    <input
+      class="author-input"
+      type="text"
+      placeholder="Auteur"
+      [ngModel]="draft()!.author"
+      (ngModelChange)="updateField('author', $event)"
+    />
+
+    <div class="badges">
+      <div class="status-group">
+        <button [class.active]="draft()!.status === 'to-read'" (click)="setStatus('to-read')">
+          À lire
+        </button>
+        <button [class.active]="draft()!.status === 'reading'" (click)="setStatus('reading')">
+          En cours
+        </button>
+        <button [class.active]="draft()!.status === 'finished'" (click)="setStatus('finished')">
+          Terminé
+        </button>
+      </div>
+
+      <div class="format-group">
+        <button [class.active]="draft()!.format === 'physique'" (click)="setFormat('physique')">
+          Papier
+        </button>
+        <button [class.active]="draft()!.format === 'liseuse'" (click)="setFormat('liseuse')">
+          Liseuse
+        </button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Genres (séparés par une virgule)</label>
+      <input
+        type="text"
+        placeholder="Fantasy, Romance..."
+        [ngModel]="genresText()"
+        (ngModelChange)="updateGenres($event)"
+      />
+    </div>
+
+    <div class="field rating">
+      <label>Note</label>
+      <div class="stars">
+        @for (i of [1, 2, 3, 4, 5]; track i) {
+          <span [class.filled]="(draft()!.rating ?? 0) >= i" (click)="setRating(i)">★</span>
+        }
+      </div>
+    </div>
+
+    <div class="field dates">
+      <p>Ajouté le : {{ draft()!.dateAdded | date: 'dd/MM/yyyy' }}</p>
+      @if (draft()!.dateStarted) {
+        <p>Commencé le : {{ draft()!.dateStarted | date: 'dd/MM/yyyy' }}</p>
+      }
+      @if (draft()!.dateFinished) {
+        <p>Terminé le : {{ draft()!.dateFinished | date: 'dd/MM/yyyy' }}</p>
+      }
+    </div>
+
+    <div class="field">
+      <label>Résumé</label>
+      <textarea
+        rows="3"
+        [ngModel]="draft()!.description"
+        (ngModelChange)="updateField('description', $event)"
+      ></textarea>
+    </div>
+
+    <div class="field comments">
+      <label>Commentaires</label>
+      <textarea
+        rows="4"
+        placeholder="Tes impressions personnelles..."
+        [ngModel]="draft()!.comments"
+        (ngModelChange)="updateField('comments', $event)"
+      ></textarea>
+    </div>
+
+    <div class="actions">
+      <button class="save" (click)="save()">Enregistrer</button>
+      <button class="delete" (click)="remove()">Supprimer</button>
+    </div>
+  }
+</div>
