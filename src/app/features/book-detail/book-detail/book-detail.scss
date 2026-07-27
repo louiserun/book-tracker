@@ -1,0 +1,197 @@
+.book-detail {
+  padding: 1rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.back {
+  background: none;
+  border: none;
+  color: #2c5f7c;
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 1rem;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.cover-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+
+  img {
+    width: 140px;
+    height: 210px;
+    object-fit: cover;
+    border-radius: 8px;
+    background: #ddd;
+  }
+
+  input {
+    width: 100%;
+    padding: 0.4rem 0.6rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 0.8rem;
+  }
+}
+
+.title-input {
+  width: 100%;
+  font-size: 1.2rem;
+  font-weight: 600;
+  border: none;
+  border-bottom: 1px solid #ddd;
+  padding: 0.4rem 0;
+  margin-bottom: 0.5rem;
+
+  &:focus {
+    outline: none;
+    border-color: #2c5f7c;
+  }
+}
+
+.author-input {
+  width: 100%;
+  font-size: 0.95rem;
+  color: #555;
+  border: none;
+  border-bottom: 1px solid #ddd;
+  padding: 0.4rem 0;
+  margin-bottom: 1rem;
+
+  &:focus {
+    outline: none;
+    border-color: #2c5f7c;
+  }
+}
+
+.badges {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.status-group,
+.format-group {
+  display: flex;
+  gap: 0.5rem;
+
+  button {
+    flex: 1;
+    padding: 0.5rem;
+    border: none;
+    border-radius: 8px;
+    background: #eee;
+    color: #333;
+    font-size: 0.85rem;
+    cursor: pointer;
+
+    &:hover:not(.active) {
+      background: #ddd;
+    }
+  }
+}
+
+.status-group button.active {
+  background: #3d8361;
+  color: white;
+  font-weight: 600;
+}
+
+.format-group button.active {
+  background: #b5651d;
+  color: white;
+  font-weight: 600;
+}
+
+.field {
+  margin-bottom: 1rem;
+
+  label {
+    display: block;
+    font-size: 0.8rem;
+    color: #888;
+    margin-bottom: 0.3rem;
+  }
+
+  input,
+  textarea {
+    width: 100%;
+    padding: 0.5rem 0.6rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-family: inherit;
+    resize: vertical;
+
+    &:focus {
+      outline: none;
+      border-color: #2c5f7c;
+    }
+  }
+}
+
+.rating .stars {
+  display: flex;
+  gap: 0.3rem;
+  font-size: 1.5rem;
+
+  span {
+    color: #ddd;
+    cursor: pointer;
+
+    &.filled {
+      color: #f0a500;
+    }
+  }
+}
+
+.dates {
+  p {
+    font-size: 0.8rem;
+    color: #888;
+    margin: 0.2rem 0;
+  }
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+
+  button {
+    flex: 1;
+    padding: 0.7rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+
+  .save {
+    background: #2c5f7c;
+    color: white;
+
+    &:hover {
+      background: #244c65;
+    }
+  }
+
+  .delete {
+    background: #fff;
+    color: #c0392b;
+    border: 1px solid #c0392b;
+
+    &:hover {
+      background: #fdecea;
+    }
+  }
+}

@@ -1,34 +1,38 @@
-<div class="library">
-  <h1>Ma bibliothèque</h1>
+@if (selectedBook(); as book) {
+  <app-book-detail [book]="book" (closed)="onDetailClosed()"></app-book-detail>
+} @else {
+  <div class="library">
+    <h1>Ma bibliothèque</h1>
 
-  <div class="tabs">
-    <button [class.active]="activeStatus() === 'to-read'" (click)="setStatus('to-read')">
-      À lire
-    </button>
-    <button [class.active]="activeStatus() === 'reading'" (click)="setStatus('reading')">
-      En cours
-    </button>
-    <button [class.active]="activeStatus() === 'finished'" (click)="setStatus('finished')">
-      Terminés
-    </button>
-  </div>
-
-  @if (filteredBooks().length === 0) {
-    <p class="empty">Aucun livre dans cette catégorie.</p>
-  } @else {
-    <div class="book-list">
-      @for (book of filteredBooks(); track book.id) {
-        <div class="book-card">
-          <img [src]="book.coverUrl || 'assets/placeholder-cover.png'" alt="" />
-          <div class="book-info">
-            <h3>{{ book.title }}</h3>
-            <p>{{ book.author }}</p>
-            @if (book.status === 'to-read') {
-              <p class="days-in-pal">Dans la PAL depuis {{ daysSinceAdded(book) }} jours</p>
-            }
-          </div>
-        </div>
-      }
+    <div class="tabs">
+      <button [class.active]="activeStatus() === 'to-read'" (click)="setStatus('to-read')">
+        À lire
+      </button>
+      <button [class.active]="activeStatus() === 'reading'" (click)="setStatus('reading')">
+        En cours
+      </button>
+      <button [class.active]="activeStatus() === 'finished'" (click)="setStatus('finished')">
+        Terminés
+      </button>
     </div>
-  }
-</div>
+
+    @if (filteredBooks().length === 0) {
+      <p class="empty">Aucun livre dans cette catégorie.</p>
+    } @else {
+      <div class="book-list">
+        @for (book of filteredBooks(); track book.id) {
+          <div class="book-card" (click)="openBook(book)">
+            <img [src]="book.coverUrl || 'assets/placeholder-cover.png'" alt="" />
+            <div class="book-info">
+              <h3>{{ book.title }}</h3>
+              <p>{{ book.author }}</p>
+              @if (book.status === 'to-read') {
+                <p class="days-in-pal">Dans la PAL depuis {{ daysSinceAdded(book) }} jours</p>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+}
