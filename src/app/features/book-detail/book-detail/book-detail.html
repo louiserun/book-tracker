@@ -54,8 +54,9 @@
     </div>
 
     <div class="field">
-      <label>Genres (séparés par une virgule)</label>
+      <label for="genres-input">Genres (séparés par une virgule)</label>
       <input
+        id="genres-input"
         type="text"
         placeholder="Fantasy, Romance..."
         [ngModel]="genresText()"
@@ -64,10 +65,19 @@
     </div>
 
     <div class="field rating">
-      <label>Note</label>
+      <label for="rating-input">Note</label>
       <div class="stars">
         @for (i of [1, 2, 3, 4, 5]; track i) {
-          <span [class.filled]="(draft()!.rating ?? 0) >= i" (click)="setRating(i)">★</span>
+          <span
+            id="rating-input"
+            [class.filled]="(draft()!.rating ?? 0) >= i"
+            tabindex="0"
+            role="button"
+            [attr.aria-label]="'Note ' + i + ' étoiles'"
+            (click)="setRating(i)"
+            (keydown.enter)="setRating(i)"
+            >★</span
+          >
         }
       </div>
     </div>
@@ -83,8 +93,9 @@
     </div>
 
     <div class="field">
-      <label>Résumé</label>
+      <label for="summary-input">Résumé</label>
       <textarea
+        id="summary-input"
         rows="3"
         [ngModel]="draft()!.description"
         (ngModelChange)="updateField('description', $event)"
@@ -92,8 +103,9 @@
     </div>
 
     <div class="field comments">
-      <label>Commentaires</label>
+      <label for="comments-input">Commentaires</label>
       <textarea
+        id="comments-input"
         rows="4"
         placeholder="Tes impressions personnelles..."
         [ngModel]="draft()!.comments"

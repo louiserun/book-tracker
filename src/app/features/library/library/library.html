@@ -21,7 +21,13 @@
     } @else {
       <div class="book-list">
         @for (book of filteredBooks(); track book.id) {
-          <div class="book-card" (click)="openBook(book)">
+          <div
+            class="book-card"
+            tabindex="0"
+            role="button"
+            (click)="openBook(book)"
+            (keydown.enter)="openBook(book)"
+          >
             <img [src]="book.coverUrl || 'assets/placeholder-cover.png'" alt="" />
             <div class="book-info">
               <h3>{{ book.title }}</h3>
