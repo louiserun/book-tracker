@@ -53,6 +53,12 @@ export class Library {
     return this.sortBooks(result);
   });
 
+  // Index de l'onglet actif (0, 1 ou 2), utilisé pour positionner le fond glissant du segmented control
+  activeStatusIndex = computed(() => {
+    const order: ReadingStatus[] = ['to-read', 'reading', 'finished'];
+    return order.indexOf(this.activeStatus());
+  });
+
   constructor() {
     this.loadBooks();
   }
@@ -113,5 +119,33 @@ export class Library {
   onDetailClosed() {
     this.selectedBook.set(undefined);
     this.loadBooks();
+  }
+
+  // Ordre des statuts, utilisé pour naviguer avec le swipe (précédent/suivant)
+  private statusOrder: ReadingStatus[] = ['to-read', 'reading', 'finished'];
+
+  // Coordonnée X au moment où le doigt touche l'écran, pour calculer la distance du swipe
+  private touchStartX = 0;
+
+  onTouchStart(event: TouchEvent) {
+    this.touchStartX = event.touches[0].clientX;
+  }
+
+  onTouchEnd(event: TouchEvent) {
+    const touchEndX = event.changedTouches[0].clientX;
+    const delta = touchEndX - this.touchStartX;
+    const threshold = 50; // distance minimale (px) pour considérer que c'est un vrai swipe
+
+    if (Math.abs(delta) < threshold) return;
+
+    const currentIndex = this.statusOrder.indexOf(this.activeStatus());
+
+    if (delta < 0 && currentIndex < this.statusOrder.length - 1) {
+      // Swipe vers la gauche → onglet suivant
+      this.setStatus(this.statusOrder[currentIndex + 1]);
+    } else if (delta > 0 && currentIndex > 0) {
+      // Swipe vers la droite → onglet précédent
+      this.setStatus(this.statusOrder[currentIndex - 1]);
+    }
   }
 }

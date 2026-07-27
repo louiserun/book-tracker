@@ -4,7 +4,11 @@
   <div class="library">
     <h1>Ma bibliothèque</h1>
 
-    <div class="tabs">
+    <div class="segmented-control">
+      <div
+        class="segment-indicator"
+        [style.transform]="'translateX(' + activeStatusIndex() * 100 + '%)'"
+      ></div>
       <button [class.active]="activeStatus() === 'to-read'" (click)="setStatus('to-read')">
         À lire
       </button>
@@ -55,29 +59,31 @@
       </div>
     </div>
 
-    @if (filteredBooks().length === 0) {
-      <p class="empty">Aucun livre dans cette catégorie.</p>
-    } @else {
-      <div class="book-list">
-        @for (book of filteredBooks(); track book.id) {
-          <div
-            class="book-card"
-            tabindex="0"
-            role="button"
-            (click)="openBook(book)"
-            (keydown.enter)="openBook(book)"
-          >
-            <img [src]="book.coverUrl || 'assets/placeholder-cover.png'" alt="" />
-            <div class="book-info">
-              <h3>{{ book.title }}</h3>
-              <p>{{ book.author }}</p>
-              @if (book.status === 'to-read') {
-                <p class="days-in-pal">Dans la PAL depuis {{ daysSinceAdded(book) }} jours</p>
-              }
+    <div class="swipe-area" (touchstart)="onTouchStart($event)" (touchend)="onTouchEnd($event)">
+      @if (filteredBooks().length === 0) {
+        <p class="empty">Aucun livre dans cette catégorie.</p>
+      } @else {
+        <div class="book-list">
+          @for (book of filteredBooks(); track book.id) {
+            <div
+              class="book-card"
+              tabindex="0"
+              role="button"
+              (click)="openBook(book)"
+              (keydown.enter)="openBook(book)"
+            >
+              <img [src]="book.coverUrl || 'assets/placeholder-cover.png'" alt="" />
+              <div class="book-info">
+                <h3>{{ book.title }}</h3>
+                <p>{{ book.author }}</p>
+                @if (book.status === 'to-read') {
+                  <p class="days-in-pal">Dans la PAL depuis {{ daysSinceAdded(book) }} jours</p>
+                }
+              </div>
             </div>
-          </div>
-        }
-      </div>
-    }
+          }
+        </div>
+      }
+    </div>
   </div>
 }
