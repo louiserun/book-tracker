@@ -1,5 +1,27 @@
 <div class="book-detail">
-  <button class="back" (click)="cancel()">&larr; Retour</button>
+  <div class="detail-header">
+    <button class="back" (click)="cancel()"><img src="icons/fleche.png" alt="" /></button>
+    @if (!editMode()) {
+      <div class="header-actions">
+        <button
+          type="button"
+          class="icon-button"
+          aria-label="Modifier la fiche"
+          (click)="enterEditMode()"
+        >
+          <img src="icons/edit.png" alt="" />
+        </button>
+        <button
+          type="button"
+          class="icon-button danger"
+          aria-label="Supprimer le livre"
+          (click)="openDeleteConfirm()"
+        >
+          <img src="icons/delete.png" alt="" />
+        </button>
+      </div>
+    }
+  </div>
 
   @if (!draft()) {
     <p>Chargement...</p>
@@ -132,9 +154,36 @@
 
     <div class="actions">
       <button class="save" (click)="save()">Enregistrer</button>
-      <button class="edit" (click)="enterEditMode()">Modifier la fiche</button>
-      <button class="delete" (click)="remove()">Supprimer</button>
     </div>
+
+    @if (deleteConfirmOpen()) {
+      <div
+        class="popup-overlay"
+        tabindex="0"
+        role="button"
+        aria-label="Fermer la fenêtre"
+        (click)="cancelDeleteConfirm()"
+        (keydown.enter)="cancelDeleteConfirm()"
+        (keydown.escape)="cancelDeleteConfirm()"
+      >
+        <div
+          class="popup"
+          tabindex="-1"
+          role="presentation"
+          (click)="$event.stopPropagation()"
+          (keydown)="$event.stopPropagation()"
+        >
+          <h3>Supprimer ce livre ?</h3>
+          <p class="popup-warning">
+            Cette action est définitive. "{{ draft()!.title }}" sera supprimé de ta bibliothèque.
+          </p>
+          <div class="popup-actions">
+            <button class="delete-confirm" (click)="confirmDelete()">Supprimer</button>
+            <button class="cancel" (click)="cancelDeleteConfirm()">Annuler</button>
+          </div>
+        </div>
+      </div>
+    }
   } @else {
     <!-- MODE ÉDITION : tous les champs modifiables -->
     <div class="cover-section">

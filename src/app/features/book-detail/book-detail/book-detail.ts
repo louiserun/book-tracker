@@ -67,6 +67,21 @@ export class BookDetail implements OnInit {
   // Texte du champ "ajouter un nouveau genre"
   newGenreText = signal('');
 
+  deleteConfirmOpen = signal(false);
+
+  openDeleteConfirm() {
+    this.deleteConfirmOpen.set(true);
+  }
+
+  cancelDeleteConfirm() {
+    this.deleteConfirmOpen.set(false);
+  }
+
+  async confirmDelete() {
+    this.deleteConfirmOpen.set(false);
+    await this.remove();
+  }
+
   private async loadAvailableGenres() {
     const allBooks = await this.bookDb.books.toArray();
     const fromLibrary = allBooks.flatMap((b) => b.genres ?? []);
