@@ -49,10 +49,25 @@ describe('BookDetail', () => {
     expect(component.book().title).toBe('Uprooted');
   });
 
-  it('should parse comma-separated genres text into an array', () => {
-    component.updateGenres('Fantasy, Romance,  Aventure ');
+  it('should toggle a genre on and off', () => {
+    expect(component.isGenreSelected('Fantasy')).toBe(false);
 
-    expect(component.draft()?.genres).toEqual(['Fantasy', 'Romance', 'Aventure']);
+    component.toggleGenre('Fantasy');
+    expect(component.isGenreSelected('Fantasy')).toBe(true);
+    expect(component.draft()?.genres).toContain('Fantasy');
+
+    component.toggleGenre('Fantasy');
+    expect(component.isGenreSelected('Fantasy')).toBe(false);
+    expect(component.draft()?.genres).not.toContain('Fantasy');
+  });
+
+  it('should add a new genre and select it', () => {
+    component.newGenreText.set('Cozy Fantasy');
+    component.addNewGenre();
+
+    expect(component.availableGenres()).toContain('Cozy Fantasy');
+    expect(component.isGenreSelected('Cozy Fantasy')).toBe(true);
+    expect(component.newGenreText()).toBe('');
   });
 
   it('should set dateStarted when status changes to reading', () => {

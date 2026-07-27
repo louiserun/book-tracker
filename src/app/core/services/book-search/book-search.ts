@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { map, Observable } from 'rxjs';
+import { map, Observable, retry, timer } from 'rxjs';
 
 // Résultat brut d'un volume retourné par l'API Google Books.
 // On ne type que les champs qui nous intéressent (l'API en renvoie beaucoup plus).
@@ -31,8 +31,8 @@ export class BookSearch {
         `${this.apiUrl}?q=${encodeURIComponent(query)}&key=${this.apiKey}`,
       )
       .pipe(
-        // L'API renvoie { items: [...] }, ou rien du tout si aucun résultat (pas de "items").
-        // Le "?? []" évite un crash si "items" est absent.
+        // Réessaie jusqu'à 2 fois en cas d'échec, avec un délai croissant (1s, puis 2s)
+        retry({ count: 2, delay: (_, retryCount) => timer(retryCount * 1000) }),
         map((res) => res.items ?? []),
       );
   }

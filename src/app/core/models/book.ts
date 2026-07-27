@@ -1,6 +1,11 @@
 export type ReadingStatus = 'to-read' | 'reading' | 'finished';
 export type BookFormat = 'physique' | 'liseuse';
 
+export interface CommentEntry {
+  text: string;
+  date: Date;
+}
+
 export interface Book {
   id?: number;
   isbn?: string;
@@ -12,7 +17,7 @@ export interface Book {
   format: BookFormat;
   status: ReadingStatus;
   rating?: number;
-  comments?: string;
+  comments?: CommentEntry[];
   dateAdded: Date;
   dateStarted?: Date;
   dateFinished?: Date;
