@@ -6,6 +6,7 @@
   h1 {
     font-size: 1.5rem;
     margin-bottom: 1rem;
+    color: var(--color-primary-dark);
   }
 }
 
@@ -18,76 +19,24 @@
     flex: 1;
     padding: 0.6rem 0.5rem;
     border: none;
-    border-radius: 8px;
-    background: #eee;
-    color: #333;
+    border-radius: var(--radius);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    color: var(--color-text);
     font-size: 0.9rem;
     cursor: pointer;
     transition: background 0.15s ease;
 
     &.active {
-      background: #2c5f7c;
+      background: var(--color-primary);
+      border-color: var(--color-primary);
       color: white;
       font-weight: 600;
     }
 
     &:hover:not(.active) {
-      background: #ddd;
+      background: var(--color-border);
     }
-  }
-}
-
-.empty {
-  text-align: center;
-  color: #888;
-  margin-top: 2rem;
-}
-
-.book-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.book-card {
-    cursor: pointer;
-  display: flex;
-  gap: 0.75rem;
-  padding: 0.5rem;
-  border: 1px solid #eee;
-  border-radius: 8px;
-
-  img {
-    width: 60px;
-    height: 90px;
-    object-fit: cover;
-    border-radius: 4px;
-    background: #ddd;
-    flex-shrink: 0;
-  }
-}
-
-.book-info {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-
-  h3 {
-    font-size: 1rem;
-    margin: 0 0 0.25rem;
-  }
-
-  p {
-    font-size: 0.85rem;
-    color: #666;
-    margin: 0;
-  }
-
-  .days-in-pal {
-    margin-top: 0.35rem;
-    font-size: 0.75rem;
-    color: #b5651d;
-    font-weight: 600;
   }
 }
 
@@ -105,16 +54,78 @@
   label {
     display: block;
     font-size: 0.75rem;
-    color: #888;
+    color: var(--color-text-muted);
     margin-bottom: 0.2rem;
   }
 
   select {
     width: 100%;
     padding: 0.4rem 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 6px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
     font-size: 0.85rem;
-    background: white;
+    background: var(--color-surface);
+    color: var(--color-text);
+  }
+}
+
+.empty {
+  text-align: center;
+  color: var(--color-text-muted);
+  margin-top: 2rem;
+}
+
+.book-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.book-card {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.5rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: box-shadow 0.15s ease;
+
+  &:hover {
+    box-shadow: 0 2px 8px rgba(214, 120, 154, 0.15);
+  }
+
+  img {
+    width: 60px;
+    height: 90px;
+    object-fit: cover;
+    border-radius: 6px;
+    background: var(--color-border);
+    flex-shrink: 0;
+  }
+}
+
+.book-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  h3 {
+    font-size: 1rem;
+    margin: 0 0 0.25rem;
+    color: var(--color-text);
+  }
+
+  p {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+
+  .days-in-pal {
+    margin-top: 0.35rem;
+    font-size: 0.75rem;
+    color: var(--color-warning);
+    font-weight: 600;
   }
 }

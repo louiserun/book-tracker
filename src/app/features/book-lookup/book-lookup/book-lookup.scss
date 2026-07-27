@@ -6,6 +6,7 @@
   h2 {
     font-size: 1.3rem;
     margin-bottom: 0.75rem;
+    color: var(--color-primary-dark);
   }
 }
 
@@ -17,40 +18,42 @@
   input {
     flex: 1;
     padding: 0.6rem 0.75rem;
-    border: 1px solid #ccc;
-    border-radius: 8px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
     font-size: 0.9rem;
+    background: var(--color-surface);
+    color: var(--color-text);
 
     &:focus {
       outline: none;
-      border-color: #2c5f7c;
+      border-color: var(--color-primary);
     }
   }
 
   button {
     padding: 0.6rem 1rem;
     border: none;
-    border-radius: 8px;
-    background: #2c5f7c;
+    border-radius: var(--radius);
+    background: var(--color-primary);
     color: white;
     font-size: 0.9rem;
     cursor: pointer;
     white-space: nowrap;
 
     &:hover {
-      background: #244c65;
+      background: var(--color-primary-dark);
     }
   }
 }
 
 .status {
   text-align: center;
-  color: #888;
+  color: var(--color-text-muted);
   font-size: 0.9rem;
   margin: 1rem 0;
 
   &.error {
-    color: #b5651d;
+    color: var(--color-warning);
   }
 }
 
@@ -64,15 +67,16 @@
   display: flex;
   gap: 0.75rem;
   padding: 0.5rem;
-  border: 1px solid #eee;
-  border-radius: 8px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
 
   img {
     width: 50px;
     height: 75px;
     object-fit: cover;
-    border-radius: 4px;
-    background: #ddd;
+    border-radius: 6px;
+    background: var(--color-border);
     flex-shrink: 0;
   }
 }
@@ -86,11 +90,12 @@
   h3 {
     font-size: 0.95rem;
     margin: 0;
+    color: var(--color-text);
   }
 
   p {
     font-size: 0.85rem;
-    color: #666;
+    color: var(--color-text-muted);
     margin: 0;
   }
 
@@ -99,13 +104,13 @@
     padding: 0.3rem 0.7rem;
     border: none;
     border-radius: 6px;
-    background: #3d8361;
+    background: var(--color-accent);
     color: white;
     font-size: 0.8rem;
     cursor: pointer;
 
     &:hover {
-      background: #326b4f;
+      background: var(--color-accent-dark);
     }
   }
 }

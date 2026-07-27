@@ -1,1 +1,24 @@
 /* You can add global styles to this file, and also import other style files */
+:root {
+  --color-primary: #D6789A;
+  --color-primary-dark: #B85A7E;
+  --color-accent: #9B7FC7;
+  --color-accent-dark: #7E63A8;
+  --color-success: #7FB88A;
+  --color-warning: #E8A24C;
+  --color-danger: #D96C6C;
+
+  --color-bg: #FDF6F9;
+  --color-surface: #FFFFFF;
+  --color-text: #3A2E35;
+  --color-text-muted: #9C8B94;
+  --color-border: #F3DDE6;
+
+  --radius: 12px;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: 'Georgia', 'Iowan Old Style', serif;
+}
