@@ -16,6 +16,45 @@
       </button>
     </div>
 
+    <div class="filters">
+      <div class="filter-group">
+        <label for="format-select">Format</label>
+        <select
+          id="format-select"
+          [ngModel]="formatFilter()"
+          (ngModelChange)="setFormatFilter($event)"
+        >
+          <option value="all">Tous</option>
+          <option value="physique">Papier</option>
+          <option value="liseuse">Liseuse</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="genre-select">Genre</label>
+        <select
+          id="genre-select"
+          [ngModel]="genreFilter()"
+          (ngModelChange)="setGenreFilter($event)"
+        >
+          <option value="all">Tous</option>
+          @for (genre of availableGenres(); track genre) {
+            <option [value]="genre">{{ genre }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="sort-select">Trier par</label>
+        <select id="sort-select" [ngModel]="sortBy()" (ngModelChange)="setSortBy($event)">
+          <option value="dateAdded">Date d'ajout</option>
+          <option value="title">Titre</option>
+          <option value="author">Auteur</option>
+          <option value="rating">Note</option>
+        </select>
+      </div>
+    </div>
+
     @if (filteredBooks().length === 0) {
       <p class="empty">Aucun livre dans cette catégorie.</p>
     } @else {
