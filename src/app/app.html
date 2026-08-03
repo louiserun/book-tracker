@@ -1,5 +1,5 @@
 <main class="content">
-  @if (activeTab() === 'library') {
+  @if (nav.activeTab() === 'library') {
     <app-library></app-library>
   } @else {
     <app-book-lookup></app-book-lookup>
@@ -7,11 +7,11 @@
 </main>
 
 <nav class="bottom-nav">
-  <button [class.active]="activeTab() === 'library'" (click)="setTab('library')">
+  <button [class.active]="nav.activeTab() === 'library'" (click)="setTab('library')">
     <img src="icons/library.png" alt="" class="nav-icon" />
     <span>Bibliothèque</span>
   </button>
-  <button [class.active]="activeTab() === 'search'" (click)="setTab('search')">
+  <button [class.active]="nav.activeTab() === 'search'" (click)="setTab('search')">
     <img src="icons/search.png" alt="" class="nav-icon" />
     <span>Rechercher</span>
   </button>
