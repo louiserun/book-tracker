@@ -17,6 +17,15 @@
   --radius: 12px;
 }
 
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button, a, [role="button"] {
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+}
+
 body {
   background: var(--color-bg);
   color: var(--color-text);

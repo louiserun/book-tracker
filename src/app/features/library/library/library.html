@@ -9,55 +9,73 @@
         class="segment-indicator"
         [style.transform]="'translateX(' + activeStatusIndex() * 100 + '%)'"
       ></div>
-      <button [class.active]="activeStatus() === 'to-read'" (click)="setStatus('to-read')">
+      <button [class.active]="nav.activeStatus() === 'to-read'" (click)="setStatus('to-read')">
         À lire
       </button>
-      <button [class.active]="activeStatus() === 'reading'" (click)="setStatus('reading')">
+      <button [class.active]="nav.activeStatus() === 'reading'" (click)="setStatus('reading')">
         En cours
       </button>
-      <button [class.active]="activeStatus() === 'finished'" (click)="setStatus('finished')">
+      <button [class.active]="nav.activeStatus() === 'finished'" (click)="setStatus('finished')">
         Terminés
       </button>
     </div>
 
-    <div class="filters">
-      <div class="filter-group">
-        <label for="format-select">Format</label>
-        <select
-          id="format-select"
-          [ngModel]="formatFilter()"
-          (ngModelChange)="setFormatFilter($event)"
-        >
-          <option value="all">Tous</option>
-          <option value="physique">Papier</option>
-          <option value="liseuse">Liseuse</option>
-        </select>
+    <div class="toolbar">
+      <div class="sort-dropdown">
+        <button class="sort-toggle" (click)="toggleSortMenu()">
+          <span class="icon">⇅</span>
+          {{ sortLabels[sortBy()] }}
+        </button>
+
+        @if (sortMenuOpen()) {
+          <div class="sort-menu">
+            @for (option of sortOptions; track option) {
+              <button [class.active]="sortBy() === option" (click)="chooseSortBy(option)">
+                {{ sortLabels[option] }}
+              </button>
+            }
+          </div>
+        }
       </div>
 
-      <div class="filter-group">
-        <label for="genre-select">Genre</label>
-        <select
-          id="genre-select"
-          [ngModel]="genreFilter()"
-          (ngModelChange)="setGenreFilter($event)"
-        >
-          <option value="all">Tous</option>
-          @for (genre of availableGenres(); track genre) {
-            <option [value]="genre">{{ genre }}</option>
-          }
-        </select>
-      </div>
-
-      <div class="filter-group">
-        <label for="sort-select">Trier par</label>
-        <select id="sort-select" [ngModel]="sortBy()" (ngModelChange)="setSortBy($event)">
-          <option value="dateAdded">Date d'ajout</option>
-          <option value="title">Titre</option>
-          <option value="author">Auteur</option>
-          <option value="rating">Note</option>
-        </select>
-      </div>
+      <button class="filter-toggle" (click)="toggleFilters()">
+        Filtres
+        @if (activeFilterCount() > 0) {
+          <span class="badge">{{ activeFilterCount() }}</span>
+        }
+      </button>
     </div>
+
+    @if (filtersOpen()) {
+      <div class="filters-panel">
+        <div class="filter-group">
+          <label for="format-select">Format</label>
+          <select
+            id="format-select"
+            [ngModel]="formatFilter()"
+            (ngModelChange)="setFormatFilter($event)"
+          >
+            <option value="all">Tous</option>
+            <option value="physique">Papier</option>
+            <option value="liseuse">Liseuse</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="genre-select">Genre</label>
+          <select
+            id="genre-select"
+            [ngModel]="genreFilter()"
+            (ngModelChange)="setGenreFilter($event)"
+          >
+            <option value="all">Tous</option>
+            @for (genre of availableGenres(); track genre) {
+              <option [value]="genre">{{ genre }}</option>
+            }
+          </select>
+        </div>
+      </div>
+    }
 
     <div class="swipe-area" (touchstart)="onTouchStart($event)" (touchend)="onTouchEnd($event)">
       @if (filteredBooks().length === 0) {

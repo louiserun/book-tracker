@@ -1,8 +1,9 @@
 import { Component, computed, inject, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { BookDb } from '../../../core/services/book-db/book-db';
+import { Navigation } from '../../../core/services/navigation/navigation';
 import { Book, BookFormat, ReadingStatus } from '../../../core/models/book';
 import { BookDetail } from '../../book-detail/book-detail/book-detail';
-import { FormsModule } from '@angular/forms';
 
 type SortOption = 'title' | 'author' | 'dateAdded' | 'rating';
 
@@ -13,32 +14,52 @@ type SortOption = 'title' | 'author' | 'dateAdded' | 'rating';
   styleUrl: './library.scss',
 })
 export class Library {
-  // Injection moderne (Angular 14+), équivalent à un constructor(private bookDb: BookDbService)
   private bookDb = inject(BookDb);
+  nav = inject(Navigation);
 
-  // signal() = état réactif Angular : quand sa valeur change, le template se met à jour automatiquement
+  sortOptions: SortOption[] = ['dateAdded', 'title', 'author', 'rating'];
+
   books = signal<Book[]>([]);
-  activeStatus = signal<ReadingStatus>('to-read');
 
-  // Livre actuellement sélectionné pour affichage dans BookDetail.
-  // undefined = aucune fiche ouverte, on affiche la liste normale.
-  selectedBook = signal<Book | undefined>(undefined);
+  // Retrouve l'objet livre complet à partir de l'id stocké dans NavigationService
+  selectedBook = computed(() => {
+    const id = this.nav.selectedBookId();
+    return id !== null ? this.books().find((b) => b.id === id) : undefined;
+  });
 
-  // Filtres additionnels : 'all' = pas de filtre appliqué sur ce critère
+  activeStatusIndex = computed(() => {
+    const order: ReadingStatus[] = ['to-read', 'reading', 'finished'];
+    return order.indexOf(this.nav.activeStatus());
+  });
+
   formatFilter = signal<BookFormat | 'all'>('all');
   genreFilter = signal<string | 'all'>('all');
   sortBy = signal<SortOption>('dateAdded');
 
-  // Liste de tous les genres présents dans la bibliothèque, sans doublons,
-  // recalculée automatiquement quand "books" change — alimente le menu déroulant de filtre.
+  filtersOpen = signal(false);
+  sortMenuOpen = signal(false);
+
+  sortLabels: Record<SortOption, string> = {
+    dateAdded: "Date d'ajout",
+    title: 'Titre',
+    author: 'Auteur',
+    rating: 'Note',
+  };
+
+  activeFilterCount = computed(() => {
+    let count = 0;
+    if (this.formatFilter() !== 'all') count++;
+    if (this.genreFilter() !== 'all') count++;
+    return count;
+  });
+
   availableGenres = computed(() => {
     const all = this.books().flatMap((b) => b.genres ?? []);
     return [...new Set(all)].sort();
   });
 
-  // computed() = valeur dérivée, recalculée automatiquement quand "books" ou "activeStatus" changent
   filteredBooks = computed(() => {
-    let result = this.books().filter((b) => b.status === this.activeStatus());
+    let result = this.books().filter((b) => b.status === this.nav.activeStatus());
 
     const format = this.formatFilter();
     if (format !== 'all') {
@@ -51,12 +72,6 @@ export class Library {
     }
 
     return this.sortBooks(result);
-  });
-
-  // Index de l'onglet actif (0, 1 ou 2), utilisé pour positionner le fond glissant du segmented control
-  activeStatusIndex = computed(() => {
-    const order: ReadingStatus[] = ['to-read', 'reading', 'finished'];
-    return order.indexOf(this.activeStatus());
   });
 
   constructor() {
@@ -74,22 +89,32 @@ export class Library {
         return sorted.sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
       case 'dateAdded':
       default:
-        // Les plus anciens d'abord — utile pour repérer les livres qui traînent dans la PAL
         return sorted.sort(
           (a, b) => new Date(a.dateAdded).getTime() - new Date(b.dateAdded).getTime(),
         );
     }
   }
 
-  // Charge tous les livres depuis IndexedDB et met à jour le signal
   private async loadBooks() {
     const all = await this.bookDb.books.toArray();
     this.books.set(all);
   }
 
-  // Change l'onglet actif (à lire / en cours / terminé)
   setStatus(status: ReadingStatus) {
-    this.activeStatus.set(status);
+    this.nav.setStatus(status);
+  }
+
+  toggleSortMenu() {
+    this.sortMenuOpen.update((open) => !open);
+  }
+
+  chooseSortBy(option: SortOption) {
+    this.sortBy.set(option);
+    this.sortMenuOpen.set(false);
+  }
+
+  toggleFilters() {
+    this.filtersOpen.update((open) => !open);
   }
 
   setFormatFilter(format: BookFormat | 'all') {
@@ -104,27 +129,25 @@ export class Library {
     this.sortBy.set(sort);
   }
 
-  // Calcule le nombre de jours depuis l'ajout — utile pour repérer les livres qui traînent dans la PAL
   daysSinceAdded(book: Book): number {
     const diff = Date.now() - new Date(book.dateAdded).getTime();
     return Math.floor(diff / (1000 * 60 * 60 * 24));
   }
 
-  // Ouvre la fiche détaillée d'un livre
   openBook(book: Book) {
-    this.selectedBook.set(book);
+    if (book.id !== undefined) {
+      this.nav.openBook(book.id);
+    }
   }
 
-  // Ferme la fiche et recharge la liste (au cas où le livre a été modifié ou supprimé)
   onDetailClosed() {
-    this.selectedBook.set(undefined);
     this.loadBooks();
+    this.nav.goBack();
   }
 
   // Ordre des statuts, utilisé pour naviguer avec le swipe (précédent/suivant)
   private statusOrder: ReadingStatus[] = ['to-read', 'reading', 'finished'];
 
-  // Coordonnée X au moment où le doigt touche l'écran, pour calculer la distance du swipe
   private touchStartX = 0;
 
   onTouchStart(event: TouchEvent) {
@@ -134,17 +157,15 @@ export class Library {
   onTouchEnd(event: TouchEvent) {
     const touchEndX = event.changedTouches[0].clientX;
     const delta = touchEndX - this.touchStartX;
-    const threshold = 50; // distance minimale (px) pour considérer que c'est un vrai swipe
+    const threshold = 50;
 
     if (Math.abs(delta) < threshold) return;
 
-    const currentIndex = this.statusOrder.indexOf(this.activeStatus());
+    const currentIndex = this.statusOrder.indexOf(this.nav.activeStatus());
 
     if (delta < 0 && currentIndex < this.statusOrder.length - 1) {
-      // Swipe vers la gauche → onglet suivant
       this.setStatus(this.statusOrder[currentIndex + 1]);
     } else if (delta > 0 && currentIndex > 0) {
-      // Swipe vers la droite → onglet précédent
       this.setStatus(this.statusOrder[currentIndex - 1]);
     }
   }
