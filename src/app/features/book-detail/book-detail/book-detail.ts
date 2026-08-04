@@ -194,6 +194,12 @@ export class BookDetail implements OnInit {
     this.closed.emit();
   }
 
+  updateDateAdded(value: string) {
+    if (value) {
+      this.updateField('dateAdded', new Date(value));
+    }
+  }
+
   cancel() {
     this.closed.emit();
   }

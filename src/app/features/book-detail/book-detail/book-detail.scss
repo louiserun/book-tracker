@@ -570,3 +570,23 @@ textarea {
   color: var(--color-text-muted);
   margin-bottom: 0.3rem;
 }
+
+.date-field {
+  margin-bottom: 0.4rem;
+
+  label {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    margin-bottom: 0.2rem;
+  }
+
+  input[type='date'] {
+    padding: 0.4rem 0.6rem;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    font-size: 0.85rem;
+    background: var(--color-surface);
+    color: var(--color-text);
+  }
+}
