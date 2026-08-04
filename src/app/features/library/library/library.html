@@ -104,6 +104,13 @@
                     }
                   </div>
                 }
+                @if ((book.status === 'reading' || book.status === 'finished') && book.rating) {
+                  <div class="card-stars">
+                    @for (i of [1, 2, 3, 4, 5]; track i) {
+                      <span [class.filled]="book.rating! >= i">★</span>
+                    }
+                  </div>
+                }
                 @if (book.status === 'to-read') {
                   <p class="days-in-pal">Dans la PAL depuis {{ daysSinceAdded(book) }} jours</p>
                 }

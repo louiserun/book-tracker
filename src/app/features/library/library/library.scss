@@ -267,3 +267,18 @@
   font-size: 0.7rem;
   color: var(--color-text-muted);
 }
+
+.card-stars {
+  display: flex;
+  gap: 0.15rem;
+  margin-top: 0.3rem;
+  font-size: 0.85rem;
+
+  span {
+    color: var(--color-border);
+
+    &.filled {
+      color: var(--color-accent);
+    }
+  }
+}
