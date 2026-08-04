@@ -97,6 +97,13 @@
                 @if (book.pageCount) {
                   <p class="page-count">{{ book.pageCount }} pages</p>
                 }
+                @if (book.genres?.length) {
+                  <div class="genre-tags">
+                    @for (genre of book.genres; track genre) {
+                      <span class="genre-tag">{{ genre }}</span>
+                    }
+                  </div>
+                }
                 @if (book.status === 'to-read') {
                   <p class="days-in-pal">Dans la PAL depuis {{ daysSinceAdded(book) }} jours</p>
                 }
