@@ -33,6 +33,9 @@
 
     <h2 class="title-readonly">{{ draft()!.title }}</h2>
     <p class="author-readonly">{{ draft()!.author }}</p>
+    @if (draft()!.pageCount) {
+      <p class="page-count">{{ draft()!.pageCount }} pages</p>
+    }
 
     <div class="badges">
       <div class="status-group">
@@ -252,6 +255,21 @@
         [ngModel]="draft()!.description"
         (ngModelChange)="updateField('description', $event)"
       ></textarea>
+    </div>
+
+    <div class="field">
+      <label for="pagecount-input">Nombre de pages</label>
+      <div class="pagecount-wrapper">
+        <input
+          id="pagecount-input"
+          class="pagecount-input"
+          type="number"
+          min="0"
+          [ngModel]="draft()!.pageCount"
+          (ngModelChange)="updateField('pageCount', $event ? +$event : undefined)"
+        />
+        <span class="pagecount-unit">pages</span>
+      </div>
     </div>
 
     <div class="actions">

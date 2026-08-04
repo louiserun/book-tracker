@@ -295,7 +295,7 @@
   text-align: center;
   font-size: 0.95rem;
   color: var(--color-text-muted);
-  margin: 0 0 1rem;
+  margin: 0 0 0.15rem;
 }
 
 .genres-readonly {
@@ -569,4 +569,58 @@ textarea {
   font-size: 0.8rem;
   color: var(--color-text-muted);
   margin-bottom: 0.3rem;
+}
+
+.page-count {
+  display: block;
+  width: fit-content;
+  margin: 0 auto 1rem;
+  padding: 0.15rem 0.6rem;
+  background: var(--color-bg);
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-accent-dark);
+}
+
+.pagecount-wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  gap: 0.5rem;
+  padding: 0.3rem 0.9rem;
+  background: var(--color-bg);
+  border: 2px solid var(--color-accent);
+  border-radius: 8px;
+}
+
+.pagecount-input {
+  width: 3.5ch !important;
+  min-width: 20px;
+  padding: 0 !important;
+  border: none !important;
+  background: transparent !important;
+  text-align: left;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-accent-dark);
+
+  -moz-appearance: textfield;
+  appearance: textfield;
+
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  &:focus {
+    outline: none !important;
+    border: none !important;
+  }
+}
+
+.pagecount-unit {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
 }
