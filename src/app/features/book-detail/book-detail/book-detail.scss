@@ -584,11 +584,10 @@ textarea {
 }
 
 .pagecount-wrapper {
-  display: flex;
-  justify-content: center;
+  display: inline-flex !important;
+  width: auto !important;
+  flex: none;
   align-items: center;
-  width: fit-content;
-  max-width: 100%;
   box-sizing: border-box;
   gap: 0.5rem;
   padding: 0.3rem 0.9rem;
