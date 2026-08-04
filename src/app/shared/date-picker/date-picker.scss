@@ -1,0 +1,123 @@
+.date-field {
+  margin-bottom: 0.4rem;
+
+  label {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    margin-bottom: 0.2rem;
+  }
+}
+
+.date-trigger {
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  font-size: 0.85rem;
+  background: var(--color-surface);
+  color: var(--color-text);
+  cursor: pointer;
+  text-align: left;
+
+  &:hover {
+    background: var(--color-bg);
+  }
+}
+
+.popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 1rem;
+}
+
+.popup {
+  width: 100%;
+  max-width: 400px;
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  box-sizing: border-box;
+}
+
+.calendar-popup {
+  max-width: 320px;
+}
+
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.calendar-month {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-text);
+  text-transform: capitalize;
+}
+
+.calendar-nav {
+  background: none;
+  border: none;
+  font-size: 1.3rem;
+  color: var(--color-primary);
+  cursor: pointer;
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+
+  &:hover {
+    background: var(--color-bg);
+  }
+}
+
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin-bottom: 0.3rem;
+
+  span {
+    text-align: center;
+    font-size: 0.7rem;
+    color: var(--color-text-muted);
+    font-weight: 600;
+  }
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.calendar-day {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--color-text);
+  font-size: 0.85rem;
+  cursor: pointer;
+
+  &:hover:not(.empty) {
+    background: var(--color-bg);
+  }
+
+  &.selected {
+    background: var(--color-primary);
+    color: white;
+    font-weight: 600;
+  }
+
+  &.empty {
+    cursor: default;
+  }
+}

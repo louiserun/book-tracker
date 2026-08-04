@@ -3,10 +3,11 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { BookDb } from '../../../core/services/book-db/book-db';
 import { Book, BookFormat, CommentEntry, ReadingStatus } from '../../../core/models/book';
+import { DatePicker } from '../../../shared/date-picker/date-picker';
 
 @Component({
   selector: 'app-book-detail',
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, DatePicker],
   templateUrl: './book-detail.html',
   styleUrl: './book-detail.scss',
 })

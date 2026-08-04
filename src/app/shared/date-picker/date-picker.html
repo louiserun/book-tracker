@@ -1,0 +1,64 @@
+<div class="date-field">
+  <label>{{ label() }}</label>
+  <button type="button" class="date-trigger" (click)="open()">
+    {{ selectedDate() ? (selectedDate() | date: 'dd/MM/yyyy') : 'Choisir une date' }}
+  </button>
+</div>
+
+@if (popupOpen()) {
+  <div
+    class="popup-overlay"
+    tabindex="0"
+    role="button"
+    aria-label="Fermer la fenêtre"
+    (click)="close()"
+    (keydown.enter)="close()"
+    (keydown.escape)="close()"
+  >
+    <div
+      class="popup calendar-popup"
+      tabindex="-1"
+      role="presentation"
+      (click)="$event.stopPropagation()"
+      (keydown)="$event.stopPropagation()"
+    >
+      <div class="calendar-header">
+        <button
+          type="button"
+          class="calendar-nav"
+          (click)="previousMonth()"
+          aria-label="Mois précédent"
+        >
+          ‹
+        </button>
+        <span class="calendar-month">{{ monthLabel() }}</span>
+        <button type="button" class="calendar-nav" (click)="nextMonth()" aria-label="Mois suivant">
+          ›
+        </button>
+      </div>
+
+      <div class="calendar-weekdays">
+        @for (label of weekdayLabels; track $index) {
+          <span>{{ label }}</span>
+        }
+      </div>
+
+      <div class="calendar-grid">
+        @for (day of calendarDays(); track $index) {
+          @if (day) {
+            <button
+              type="button"
+              class="calendar-day"
+              [class.selected]="isSelectedDay(day)"
+              (click)="selectDate(day)"
+            >
+              {{ day.getDate() }}
+            </button>
+          } @else {
+            <span class="calendar-day empty"></span>
+          }
+        }
+      </div>
+    </div>
+  </div>
+}

@@ -83,15 +83,11 @@
     }
 
     <div class="field dates">
-      <div class="date-field">
-        <label for="date-added-input">Ajouté le</label>
-        <input
-          id="date-added-input"
-          type="date"
-          [ngModel]="draft()!.dateAdded | date: 'yyyy-MM-dd'"
-          (ngModelChange)="updateDateAdded($event)"
-        />
-      </div>
+      <app-date-picker
+        label="Ajouté le"
+        [selectedDate]="draft()!.dateAdded"
+        (dateSelected)="updateField('dateAdded', $event)"
+      ></app-date-picker>
       @if (draft()!.dateStarted) {
         <p>Commencé le : {{ draft()!.dateStarted | date: 'dd/MM/yyyy' }}</p>
       }
