@@ -18,6 +18,7 @@ export interface Book {
   status: ReadingStatus;
   rating?: number;
   comments?: CommentEntry[];
+  pageCount?: number;
   dateAdded: Date;
   dateStarted?: Date;
   dateFinished?: Date;

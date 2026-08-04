@@ -94,6 +94,9 @@
               <div class="book-info">
                 <h3>{{ book.title }}</h3>
                 <p>{{ book.author }}</p>
+                @if (book.pageCount) {
+                  <p class="page-count">{{ book.pageCount }} pages</p>
+                }
                 @if (book.status === 'to-read') {
                   <p class="days-in-pal">Dans la PAL depuis {{ daysSinceAdded(book) }} jours</p>
                 }

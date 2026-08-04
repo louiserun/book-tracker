@@ -10,9 +10,10 @@ export interface GoogleBookResult {
     title: string;
     authors?: string[];
     description?: string;
-    categories?: string[]; // correspond à nos "genres"
+    categories?: string[];
+    pageCount?: number;
     imageLinks?: { thumbnail?: string };
-    industryIdentifiers?: { type: string; identifier: string }[]; // contient l'ISBN
+    industryIdentifiers?: { type: string; identifier: string }[];
   };
 }
 

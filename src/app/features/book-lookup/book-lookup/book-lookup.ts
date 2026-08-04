@@ -60,6 +60,7 @@ export class BookLookup {
       genres: info.categories,
       coverUrl: info.imageLinks?.thumbnail,
       isbn: info.industryIdentifiers?.find((i) => i.type.includes('ISBN'))?.identifier,
+      pageCount: info.pageCount,
       format: 'physique',
       status: 'to-read',
       dateAdded: new Date(),
