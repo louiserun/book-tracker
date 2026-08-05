@@ -1,14 +1,28 @@
 .book-detail {
-  padding: 1rem;
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
   max-width: 600px;
   margin: 0 auto;
+  background: var(--color-bg);
+}
+
+.detail-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 0 1.5rem;
 }
 
 .detail-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 1rem;
+  flex-shrink: 0;
+  padding: 0.5rem 0.9rem 0.5rem;
+  background: var(--color-bg);
 }
 
 .back {
@@ -23,8 +37,8 @@
   padding: 0;
 
   img {
-    width: 35px;
-    height: 35px;
+    width: 40px;
+    height: 40px;
     object-fit: contain;
   }
 
@@ -229,10 +243,12 @@
   }
 }
 
-.actions {
+.detail-footer {
   display: flex;
   gap: 0.5rem;
-  margin-top: 1.5rem;
+  flex-shrink: 0;
+  padding: 0.75rem 1.5rem 1rem;
+  background: var(--color-bg);
 
   button {
     flex: 1;
@@ -252,13 +268,13 @@
     }
   }
 
-  .delete {
+  .cancel {
     background: var(--color-surface);
-    color: var(--color-danger);
-    border: 1px solid var(--color-danger);
+    color: var(--color-text-muted);
+    border: 1px solid var(--color-border);
 
     &:hover {
-      background: #fbe9e9;
+      background: var(--color-border);
     }
   }
 }
