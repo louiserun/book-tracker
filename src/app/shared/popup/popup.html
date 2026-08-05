@@ -1,0 +1,22 @@
+<div
+  class="popup-overlay"
+  tabindex="0"
+  role="button"
+  aria-label="Fermer la fenêtre"
+  (click)="close()"
+  (keydown.enter)="close()"
+  (keydown.escape)="close()"
+>
+  <div
+    class="popup"
+    tabindex="-1"
+    role="presentation"
+    (click)="$event.stopPropagation()"
+    (keydown)="$event.stopPropagation()"
+  >
+    @if (title()) {
+      <h3>{{ title() }}</h3>
+    }
+    <ng-content></ng-content>
+  </div>
+</div>

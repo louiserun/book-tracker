@@ -169,4 +169,16 @@ export class Library {
       this.setStatus(this.statusOrder[currentIndex - 1]);
     }
   }
+
+  // Calcule un pourcentage cohérent, que la dernière entrée soit en % ou en pages
+  progressPercent(book: Book): number {
+    const entries = book.progress;
+    if (!entries?.length) return 0;
+    const latest = entries[entries.length - 1];
+    if (latest.percentage !== undefined) return latest.percentage;
+    if (latest.page !== undefined && book.pageCount) {
+      return Math.min(100, Math.round((latest.page / book.pageCount) * 100));
+    }
+    return 0;
+  }
 }

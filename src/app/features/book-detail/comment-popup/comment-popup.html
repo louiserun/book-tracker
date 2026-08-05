@@ -1,0 +1,13 @@
+<app-popup title="Nouveau commentaire" (closed)="close()">
+  <p class="popup-date">{{ today | date: 'dd/MM/yyyy' }}</p>
+  <textarea
+    rows="4"
+    placeholder="Tes impressions du moment..."
+    [ngModel]="text()"
+    (ngModelChange)="text.set($event)"
+  ></textarea>
+  <div class="popup-actions">
+    <button class="save" (click)="save()">Enregistrer</button>
+    <button class="cancel" (click)="close()">Annuler</button>
+  </div>
+</app-popup>

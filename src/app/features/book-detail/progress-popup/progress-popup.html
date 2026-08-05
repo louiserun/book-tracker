@@ -1,0 +1,50 @@
+<app-popup title="Mettre à jour la progression" (closed)="close()">
+  <div class="progress-form">
+    <div class="form-row">
+      <app-date-picker
+        [selectedDate]="entryDate()"
+        (dateSelected)="setDate($event)"
+      ></app-date-picker>
+    </div>
+
+    <div class="form-row">
+      <span class="field-label">Progression</span>
+      <div class="pagecount-wrapper">
+        <input
+          type="number"
+          min="0"
+          [max]="maxValue()"
+          class="pagecount-input"
+          [ngModel]="value()"
+          (ngModelChange)="value.set($event)"
+        />
+
+        <div class="type-dropdown">
+          <button type="button" class="type-toggle" (click)="toggleTypeMenu()">
+            {{ type() === 'percentage' ? '%' : 'page' }}
+          </button>
+
+          @if (typeMenuOpen()) {
+            <div class="type-menu">
+              <button
+                type="button"
+                [class.active]="type() === 'percentage'"
+                (click)="chooseType('percentage')"
+              >
+                %
+              </button>
+              <button type="button" [class.active]="type() === 'page'" (click)="chooseType('page')">
+                page
+              </button>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="popup-actions">
+    <button class="save" (click)="save()">Enregistrer</button>
+    <button class="cancel" (click)="close()">Annuler</button>
+  </div>
+</app-popup>

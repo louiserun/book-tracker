@@ -1,13 +1,22 @@
-import { Component, inject, input, output, signal, OnInit } from '@angular/core';
+import { Component, inject, input, output, signal, OnInit, computed } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { BookDb } from '../../../core/services/book-db/book-db';
-import { Book, BookFormat, CommentEntry, ReadingStatus } from '../../../core/models/book';
+import {
+  Book,
+  BookFormat,
+  CommentEntry,
+  ReadingStatus,
+  ProgressEntry,
+} from '../../../core/models/book';
 import { DatePicker } from '../../../shared/date-picker/date-picker';
+import { CommentPopup } from '../comment-popup/comment-popup';
+import { DeleteConfirmPopup } from '../delete-confirm-popup/delete-confirm-popup';
+import { ProgressPopup } from '../progress-popup/progress-popup';
 
 @Component({
   selector: 'app-book-detail',
-  imports: [FormsModule, CommonModule, DatePicker],
+  imports: [FormsModule, CommonModule, DatePicker, CommentPopup, ProgressPopup, DeleteConfirmPopup],
   templateUrl: './book-detail.html',
   styleUrl: './book-detail.scss',
 })
@@ -55,12 +64,10 @@ export class BookDetail implements OnInit {
     this.editMode.set(true);
   }
 
-  // Contrôle l'ouverture du popup d'ajout de commentaire
+  // Simples flags d'ouverture, toute la logique de saisie vit maintenant dans chaque popup
   commentPopupOpen = signal(false);
-
-  // Texte en cours de saisie dans le popup (distinct du draft, pour ne l'ajouter
-  // qu'au moment de la validation, pas à chaque frappe)
-  newCommentText = signal('');
+  deleteConfirmOpen = signal(false);
+  progressPopupOpen = signal(false);
 
   // Tous les genres déjà utilisés dans la bibliothèque, sans doublons, triés
   availableGenres = signal<string[]>([]);
@@ -68,19 +75,24 @@ export class BookDetail implements OnInit {
   // Texte du champ "ajouter un nouveau genre"
   newGenreText = signal('');
 
-  deleteConfirmOpen = signal(false);
+  progressType = signal<'percentage' | 'page'>('percentage');
+  newProgressValue = signal('');
 
-  openDeleteConfirm() {
-    this.deleteConfirmOpen.set(true);
+  progressHistoryOpen = signal(false);
+
+  toggleProgressHistory() {
+    this.progressHistoryOpen.update((open) => !open);
   }
 
-  cancelDeleteConfirm() {
-    this.deleteConfirmOpen.set(false);
-  }
+  // Dernière entrée de progression enregistrée, pour affichage rapide
+  latestProgress = computed(() => {
+    const entries = this.draft()?.progress;
+    if (!entries?.length) return undefined;
+    return entries[entries.length - 1];
+  });
 
-  async confirmDelete() {
-    this.deleteConfirmOpen.set(false);
-    await this.remove();
+  setProgressType(type: 'percentage' | 'page') {
+    this.progressType.set(type);
   }
 
   private async loadAvailableGenres() {
@@ -116,27 +128,22 @@ export class BookDetail implements OnInit {
     this.newGenreText.set('');
   }
 
-  openCommentPopup() {
-    this.newCommentText.set('');
-    this.commentPopupOpen.set(true);
-  }
-
-  closeCommentPopup() {
+  // --- Commentaires ---
+  onCommentAdded(entry: CommentEntry) {
+    this.draft.update((b) => (b ? { ...b, comments: [...(b.comments ?? []), entry] } : b));
     this.commentPopupOpen.set(false);
   }
 
-  saveComment() {
-    const text = this.newCommentText().trim();
-    if (!text) return;
+  // --- Suppression ---
+  onDeleteConfirmed() {
+    this.deleteConfirmOpen.set(false);
+    this.remove();
+  }
 
-    const entry: CommentEntry = { text, date: new Date() };
-    this.draft.update((b) => {
-      if (!b) return b;
-      const comments = [...(b.comments ?? []), entry];
-      return { ...b, comments };
-    });
-
-    this.commentPopupOpen.set(false);
+  // --- Progression ---
+  onProgressAdded(entry: ProgressEntry) {
+    this.draft.update((b) => (b ? { ...b, progress: [...(b.progress ?? []), entry] } : b));
+    this.progressPopupOpen.set(false);
   }
 
   cancelEdit() {
@@ -203,5 +210,17 @@ export class BookDetail implements OnInit {
 
   cancel() {
     this.closed.emit();
+  }
+
+  progressPercentValue(): number {
+    const entries = this.draft()?.progress;
+    if (!entries?.length) return 0;
+    const latest = entries[entries.length - 1];
+    if (latest.percentage !== undefined) return latest.percentage;
+    const pageCount = this.draft()?.pageCount;
+    if (latest.page !== undefined && pageCount) {
+      return Math.min(100, Math.round((latest.page / pageCount) * 100));
+    }
+    return 0;
   }
 }

@@ -114,6 +114,14 @@
                 @if (book.status === 'to-read') {
                   <p class="days-in-pal">Dans la PAL depuis {{ daysSinceAdded(book) }} jours</p>
                 }
+                @if (book.status === 'reading' && book.progress?.length) {
+                  <div class="progress-bar-mini">
+                    <div
+                      class="progress-bar-mini-fill"
+                      [style.width.%]="progressPercent(book)"
+                    ></div>
+                  </div>
+                }
               </div>
             </div>
           }

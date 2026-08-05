@@ -15,7 +15,7 @@
           type="button"
           class="icon-button danger"
           aria-label="Supprimer le livre"
-          (click)="openDeleteConfirm()"
+          (click)="deleteConfirmOpen.set(true)"
         >
           <img src="icons/delete.png" alt="" />
         </button>
@@ -50,6 +50,53 @@
         </button>
       </div>
 
+      @if (draft()!.status === 'reading') {
+        <div class="field progress">
+          <div class="progress-header">
+            <span class="field-label">Progression</span>
+            <button class="add-comment" (click)="progressPopupOpen.set(true)">
+              + Mettre à jour
+            </button>
+          </div>
+
+          @if (draft()!.progress?.length) {
+            <div class="progress-bar-detailed">
+              <div
+                class="progress-bar-detailed-fill"
+                [style.width.%]="progressPercentValue()"
+              ></div>
+            </div>
+
+            <button type="button" class="progress-history-toggle" (click)="toggleProgressHistory()">
+              {{ progressHistoryOpen() ? 'Masquer' : 'Voir' }} l'historique ({{
+                draft()!.progress!.length
+              }}
+              mise{{ draft()!.progress!.length > 1 ? 's' : '' }} à jour)
+            </button>
+
+            @if (progressHistoryOpen()) {
+              <div class="progress-history">
+                @for (entry of draft()!.progress!.slice().reverse(); track entry.date) {
+                  <div class="progress-entry">
+                    <span class="progress-entry-value">
+                      @if (entry.percentage !== undefined) {
+                        {{ entry.percentage }}%
+                      } @else {
+                        page {{ entry.page
+                        }}{{ draft()!.pageCount ? ' / ' + draft()!.pageCount : '' }}
+                      }
+                    </span>
+                    <span class="progress-entry-date">{{ entry.date | date: 'dd/MM/yyyy' }}</span>
+                  </div>
+                }
+              </div>
+            }
+          } @else {
+            <p class="no-comments">Aucune progression enregistrée.</p>
+          }
+        </div>
+      }
+
       <div class="format-group">
         <button [class.active]="draft()!.format === 'physique'" (click)="setFormat('physique')">
           Papier
@@ -78,6 +125,7 @@
     </div>
 
     @if (draft()!.genres?.length) {
+      <span class="field-label">Genres</span>
       <div class="genres-readonly">
         @for (genre of draft()!.genres; track genre) {
           <span class="genre-chip">{{ genre }}</span>
@@ -86,11 +134,7 @@
     }
 
     <div class="field dates">
-      <app-date-picker
-        label="Ajouté le"
-        [selectedDate]="draft()!.dateAdded"
-        (dateSelected)="updateField('dateAdded', $event)"
-      ></app-date-picker>
+      <p>Ajouté le : {{ draft()!.dateAdded | date: 'dd/MM/yyyy' }}</p>
       @if (draft()!.dateStarted) {
         <p>Commencé le : {{ draft()!.dateStarted | date: 'dd/MM/yyyy' }}</p>
       }
@@ -109,7 +153,9 @@
     <div class="field comments">
       <div class="comments-header">
         <span class="field-label">Commentaires</span>
-        <button class="add-comment" (click)="openCommentPopup()">+ Ajouter un commentaire</button>
+        <button class="add-comment" (click)="commentPopupOpen.set(true)">
+          + Ajouter un commentaire
+        </button>
       </div>
 
       @if (!draft()!.comments?.length) {
@@ -127,70 +173,30 @@
     </div>
 
     @if (commentPopupOpen()) {
-      <div
-        class="popup-overlay"
-        tabindex="0"
-        role="button"
-        aria-label="Fermer la fenêtre"
-        (click)="closeCommentPopup()"
-        (keydown.enter)="closeCommentPopup()"
-        (keydown.escape)="closeCommentPopup()"
-      >
-        <div
-          class="popup"
-          tabindex="-1"
-          role="presentation"
-          (click)="$event.stopPropagation()"
-          (keydown)="$event.stopPropagation()"
-        >
-          <h3>Nouveau commentaire</h3>
-          <p class="popup-date">{{ today | date: 'dd/MM/yyyy' }}</p>
-          <textarea
-            rows="4"
-            placeholder="Tes impressions du moment..."
-            [ngModel]="newCommentText()"
-            (ngModelChange)="newCommentText.set($event)"
-          ></textarea>
-          <div class="popup-actions">
-            <button class="save" (click)="saveComment()">Enregistrer</button>
-            <button class="cancel" (click)="closeCommentPopup()">Annuler</button>
-          </div>
-        </div>
-      </div>
+      <app-comment-popup
+        (commentAdded)="onCommentAdded($event)"
+        (closed)="commentPopupOpen.set(false)"
+      ></app-comment-popup>
+    }
+
+    @if (deleteConfirmOpen()) {
+      <app-delete-confirm-popup
+        [bookTitle]="draft()!.title"
+        (confirmed)="onDeleteConfirmed()"
+        (closed)="deleteConfirmOpen.set(false)"
+      ></app-delete-confirm-popup>
+    }
+
+    @if (progressPopupOpen()) {
+      <app-progress-popup
+        (progressAdded)="onProgressAdded($event)"
+        (closed)="progressPopupOpen.set(false)"
+      ></app-progress-popup>
     }
 
     <div class="actions">
       <button class="save" (click)="save()">Enregistrer</button>
     </div>
-
-    @if (deleteConfirmOpen()) {
-      <div
-        class="popup-overlay"
-        tabindex="0"
-        role="button"
-        aria-label="Fermer la fenêtre"
-        (click)="cancelDeleteConfirm()"
-        (keydown.enter)="cancelDeleteConfirm()"
-        (keydown.escape)="cancelDeleteConfirm()"
-      >
-        <div
-          class="popup"
-          tabindex="-1"
-          role="presentation"
-          (click)="$event.stopPropagation()"
-          (keydown)="$event.stopPropagation()"
-        >
-          <h3>Supprimer ce livre ?</h3>
-          <p class="popup-warning">
-            Cette action est définitive. "{{ draft()!.title }}" sera supprimé de ta bibliothèque.
-          </p>
-          <div class="popup-actions">
-            <button class="delete-confirm" (click)="confirmDelete()">Supprimer</button>
-            <button class="cancel" (click)="cancelDeleteConfirm()">Annuler</button>
-          </div>
-        </div>
-      </div>
-    }
   } @else {
     <!-- MODE ÉDITION : tous les champs modifiables -->
     <div class="cover-section">
@@ -218,6 +224,21 @@
       [ngModel]="draft()!.author"
       (ngModelChange)="updateField('author', $event)"
     />
+
+    <div class="field pagecount-field">
+      <label for="pagecount-input">Nombre de pages</label>
+      <div class="pagecount-wrapper">
+        <input
+          id="pagecount-input"
+          class="pagecount-input"
+          type="number"
+          min="0"
+          [ngModel]="draft()!.pageCount"
+          (ngModelChange)="updateField('pageCount', $event ? +$event : undefined)"
+        />
+        <span class="pagecount-unit">pages</span>
+      </div>
+    </div>
 
     <div class="field">
       <span class="field-label" id="genres-label">Genres</span>
@@ -247,6 +268,24 @@
     </div>
 
     <div class="field">
+      <app-date-picker
+        label="Ajouté le"
+        [selectedDate]="draft()!.dateAdded"
+        (dateSelected)="updateField('dateAdded', $event)"
+      ></app-date-picker>
+    </div>
+
+    @if (draft()!.status !== 'to-read') {
+      <div class="field">
+        <app-date-picker
+          label="Commencé le"
+          [selectedDate]="draft()!.dateStarted"
+          (dateSelected)="updateField('dateStarted', $event)"
+        ></app-date-picker>
+      </div>
+    }
+
+    <div class="field">
       <label for="description-input">Résumé</label>
       <textarea
         id="description-input"
@@ -255,21 +294,6 @@
         [ngModel]="draft()!.description"
         (ngModelChange)="updateField('description', $event)"
       ></textarea>
-    </div>
-
-    <div class="field pagecount-field">
-      <label for="pagecount-input">Nombre de pages</label>
-      <div class="pagecount-wrapper">
-        <input
-          id="pagecount-input"
-          class="pagecount-input"
-          type="number"
-          min="0"
-          [ngModel]="draft()!.pageCount"
-          (ngModelChange)="updateField('pageCount', $event ? +$event : undefined)"
-        />
-        <span class="pagecount-unit">pages</span>
-      </div>
     </div>
 
     <div class="actions">
