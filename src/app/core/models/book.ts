@@ -6,6 +6,12 @@ export interface CommentEntry {
   date: Date;
 }
 
+export interface ProgressEntry {
+  date: Date;
+  percentage?: number;
+  page?: number;
+}
+
 export interface Book {
   id?: number;
   isbn?: string;
@@ -19,6 +25,7 @@ export interface Book {
   rating?: number;
   comments?: CommentEntry[];
   pageCount?: number;
+  progress?: ProgressEntry[];
   dateAdded: Date;
   dateStarted?: Date;
   dateFinished?: Date;
