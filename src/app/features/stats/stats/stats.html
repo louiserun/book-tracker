@@ -1,0 +1,121 @@
+<div class="stats">
+  <h1>Statistiques</h1>
+
+  @if (books().length === 0) {
+    <p class="empty">Pas encore de livres dans ta bibliothèque.</p>
+  } @else {
+    <!-- Vue d'ensemble -->
+    <section class="stats-section">
+      <h2>Vue d'ensemble</h2>
+      <div class="stat-grid">
+        <div class="stat-card">
+          <span class="stat-value">{{ totalToRead() }}</span>
+          <span class="stat-label">À lire</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value">{{ totalReading() }}</span>
+          <span class="stat-label">En cours</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value">{{ totalFinished() }}</span>
+          <span class="stat-label">Terminés</span>
+        </div>
+      </div>
+      <p class="stat-line">
+        Terminés cette année : <strong>{{ finishedThisYear() }}</strong>
+      </p>
+      <p class="stat-line">
+        Terminés ce mois-ci : <strong>{{ finishedThisMonth() }}</strong>
+      </p>
+      <p class="stat-line">
+        Pages lues au total : <strong>{{ totalPagesRead() }}</strong>
+      </p>
+    </section>
+
+    <!-- Rythme de lecture -->
+    <section class="stats-section">
+      <h2>Rythme de lecture</h2>
+
+      @if (averageReadingDays() !== null) {
+        <p class="stat-line">
+          Durée moyenne de lecture : <strong>{{ averageReadingDays() }} jours</strong>
+        </p>
+      }
+
+      @if (fastestBook(); as fastest) {
+        <p class="stat-line">
+          Le plus rapide : <strong>{{ fastest.title }}</strong> ({{ bookDuration(fastest) }} jours)
+        </p>
+      }
+      @if (slowestBook(); as slowest) {
+        <p class="stat-line">
+          Le plus long : <strong>{{ slowest.title }}</strong> ({{ bookDuration(slowest) }} jours)
+        </p>
+      }
+
+      <div class="monthly-chart">
+        @for (month of monthlyFinished(); track month.label) {
+          <div class="monthly-bar-wrapper">
+            <div
+              class="monthly-bar"
+              [style.height.%]="(month.count / maxMonthlyCount()) * 100"
+            ></div>
+            <span class="monthly-count">{{ month.count }}</span>
+            <span class="monthly-label">{{ month.label }}</span>
+          </div>
+        }
+      </div>
+    </section>
+
+    <!-- Goûts et préférences -->
+    <section class="stats-section">
+      <h2>Goûts et préférences</h2>
+
+      @if (topGenre(); as genre) {
+        <p class="stat-line">
+          Genre préféré : <strong>{{ genre[0] }}</strong> ({{ genre[1] }} livres)
+        </p>
+      }
+      @if (averageRating(); as avg) {
+        <p class="stat-line">
+          Note moyenne : <strong>{{ avg }} / 5</strong>
+        </p>
+      }
+      @if (topAuthor(); as author) {
+        <p class="stat-line">
+          Auteur le plus lu : <strong>{{ author[0] }}</strong> ({{ author[1] }} livres)
+        </p>
+      }
+
+      <div class="format-split">
+        <div class="format-bar">
+          <div class="format-bar-physique" [style.width.%]="formatSplit().physiquePercent"></div>
+          <div class="format-bar-liseuse" [style.width.%]="formatSplit().liseusePercent"></div>
+        </div>
+        <div class="format-legend">
+          <span>📖 Papier ({{ formatSplit().physique }})</span>
+          <span>📱 Liseuse ({{ formatSplit().liseuse }})</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAL -->
+    <section class="stats-section">
+      <h2>Pile à lire</h2>
+
+      @if (oldestPalBook(); as oldest) {
+        <p class="stat-line">
+          Le plus ancien : <strong>{{ oldest.title }}</strong> ({{ daysSinceAdded(oldest) }} jours)
+        </p>
+      }
+      @if (averagePalAge() !== null) {
+        <p class="stat-line">
+          Ancienneté moyenne de la PAL : <strong>{{ averagePalAge() }} jours</strong>
+        </p>
+      }
+      <p class="stat-line">
+        Livres ajoutés ce mois-ci : <strong>{{ addedThisMonth() }}</strong>
+      </p>
+    </section>
+  }
+</div>

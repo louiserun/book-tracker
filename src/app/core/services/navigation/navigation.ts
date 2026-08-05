@@ -1,7 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 import { ReadingStatus } from '../../models/book';
 
-export type Tab = 'library' | 'search';
+export type Tab = 'library' | 'search' | 'stats';
 
 interface NavState {
   tab: Tab;

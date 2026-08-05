@@ -19,6 +19,7 @@
 
 * {
   -webkit-tap-highlight-color: transparent;
+  box-sizing: border-box;
 }
 
 button, a, [role="button"] {
@@ -30,4 +31,9 @@ body {
   background: var(--color-bg);
   color: var(--color-text);
   font-family: 'Georgia', 'Iowan Old Style', serif;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
 }

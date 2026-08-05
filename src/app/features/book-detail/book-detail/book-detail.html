@@ -23,282 +23,292 @@
     }
   </div>
 
-  @if (!draft()) {
-    <p>Chargement...</p>
-  } @else if (!editMode()) {
-    <!-- MODE LECTURE : clair, non modifiable sauf statut/format/note/commentaires -->
-    <div class="cover-readonly">
-      <img [src]="draft()!.coverUrl || 'assets/placeholder-cover.png'" alt="" />
-    </div>
-
-    <h2 class="title-readonly">{{ draft()!.title }}</h2>
-    <p class="author-readonly">{{ draft()!.author }}</p>
-    @if (draft()!.pageCount) {
-      <p class="page-count">{{ draft()!.pageCount }} pages</p>
-    }
-
-    <div class="badges">
-      <div class="status-group">
-        <button [class.active]="draft()!.status === 'to-read'" (click)="setStatus('to-read')">
-          À lire
-        </button>
-        <button [class.active]="draft()!.status === 'reading'" (click)="setStatus('reading')">
-          En cours
-        </button>
-        <button [class.active]="draft()!.status === 'finished'" (click)="setStatus('finished')">
-          Terminé
-        </button>
+  <div class="detail-body">
+    @if (!draft()) {
+      <p>Chargement...</p>
+    } @else if (!editMode()) {
+      <!-- MODE LECTURE : clair, non modifiable sauf statut/format/note/commentaires -->
+      <div class="cover-readonly">
+        <img [src]="draft()!.coverUrl || 'assets/placeholder-cover.png'" alt="" />
       </div>
 
-      @if (draft()!.status === 'reading') {
-        <div class="field progress">
-          <div class="progress-header">
-            <span class="field-label">Progression</span>
-            <button class="add-comment" (click)="progressPopupOpen.set(true)">
-              + Mettre à jour
-            </button>
-          </div>
+      <h2 class="title-readonly">{{ draft()!.title }}</h2>
+      <p class="author-readonly">{{ draft()!.author }}</p>
+      @if (draft()!.pageCount) {
+        <p class="page-count">{{ draft()!.pageCount }} pages</p>
+      }
 
-          @if (draft()!.progress?.length) {
-            <div class="progress-bar-detailed">
-              <div
-                class="progress-bar-detailed-fill"
-                [style.width.%]="progressPercentValue()"
-              ></div>
+      <div class="badges">
+        <div class="status-group">
+          <button [class.active]="draft()!.status === 'to-read'" (click)="setStatus('to-read')">
+            À lire
+          </button>
+          <button [class.active]="draft()!.status === 'reading'" (click)="setStatus('reading')">
+            En cours
+          </button>
+          <button [class.active]="draft()!.status === 'finished'" (click)="setStatus('finished')">
+            Terminé
+          </button>
+        </div>
+
+        @if (draft()!.status === 'reading') {
+          <div class="field progress">
+            <div class="progress-header">
+              <span class="field-label">Progression</span>
+              <button class="add-comment" (click)="progressPopupOpen.set(true)">
+                + Mettre à jour
+              </button>
             </div>
 
-            <button type="button" class="progress-history-toggle" (click)="toggleProgressHistory()">
-              {{ progressHistoryOpen() ? 'Masquer' : 'Voir' }} l'historique ({{
-                draft()!.progress!.length
-              }}
-              mise{{ draft()!.progress!.length > 1 ? 's' : '' }} à jour)
-            </button>
+            @if (draft()!.progress?.length) {
+              <div class="progress-bar-detailed">
+                <div
+                  class="progress-bar-detailed-fill"
+                  [style.width.%]="progressPercentValue()"
+                ></div>
+              </div>
 
-            @if (progressHistoryOpen()) {
-              <div class="progress-history">
-                @for (entry of draft()!.progress!.slice().reverse(); track entry.date) {
-                  <div class="progress-entry">
-                    <span class="progress-entry-value">
-                      @if (entry.percentage !== undefined) {
-                        {{ entry.percentage }}%
-                      } @else {
-                        page {{ entry.page
-                        }}{{ draft()!.pageCount ? ' / ' + draft()!.pageCount : '' }}
-                      }
-                    </span>
-                    <span class="progress-entry-date">{{ entry.date | date: 'dd/MM/yyyy' }}</span>
-                  </div>
-                }
+              <button
+                type="button"
+                class="progress-history-toggle"
+                (click)="toggleProgressHistory()"
+              >
+                {{ progressHistoryOpen() ? 'Masquer' : 'Voir' }} l'historique ({{
+                  draft()!.progress!.length
+                }}
+                mise{{ draft()!.progress!.length > 1 ? 's' : '' }} à jour)
+              </button>
+
+              @if (progressHistoryOpen()) {
+                <div class="progress-history">
+                  @for (entry of draft()!.progress!.slice().reverse(); track entry.date) {
+                    <div class="progress-entry">
+                      <span class="progress-entry-value">
+                        @if (entry.percentage !== undefined) {
+                          {{ entry.percentage }}%
+                        } @else {
+                          page {{ entry.page
+                          }}{{ draft()!.pageCount ? ' / ' + draft()!.pageCount : '' }}
+                        }
+                      </span>
+                      <span class="progress-entry-date">{{ entry.date | date: 'dd/MM/yyyy' }}</span>
+                    </div>
+                  }
+                </div>
+              }
+            } @else {
+              <p class="no-comments">Aucune progression enregistrée.</p>
+            }
+          </div>
+        }
+
+        <div class="format-group">
+          <button [class.active]="draft()!.format === 'physique'" (click)="setFormat('physique')">
+            Papier
+          </button>
+          <button [class.active]="draft()!.format === 'liseuse'" (click)="setFormat('liseuse')">
+            Liseuse
+          </button>
+        </div>
+      </div>
+
+      <div class="field rating">
+        <span class="field-label" id="rating-label">Note</span>
+        <div class="stars" aria-labelledby="rating-label">
+          @for (i of [1, 2, 3, 4, 5]; track i) {
+            <span
+              [class.filled]="(draft()!.rating ?? 0) >= i"
+              tabindex="0"
+              role="button"
+              [attr.aria-label]="'Note ' + i + ' étoiles'"
+              (click)="setRating(i)"
+              (keydown.enter)="setRating(i)"
+              >★</span
+            >
+          }
+        </div>
+      </div>
+
+      @if (draft()!.genres?.length) {
+        <span class="field-label">Genres</span>
+        <div class="genres-readonly">
+          @for (genre of draft()!.genres; track genre) {
+            <span class="genre-chip">{{ genre }}</span>
+          }
+        </div>
+      }
+
+      <div class="field dates">
+        <p>Ajouté le : {{ draft()!.dateAdded | date: 'dd/MM/yyyy' }}</p>
+        @if (draft()!.dateStarted) {
+          <p>Commencé le : {{ draft()!.dateStarted | date: 'dd/MM/yyyy' }}</p>
+        }
+        @if (draft()!.dateFinished) {
+          <p>Terminé le : {{ draft()!.dateFinished | date: 'dd/MM/yyyy' }}</p>
+        }
+      </div>
+
+      @if (draft()!.description) {
+        <div class="field">
+          <span class="field-label">Résumé</span>
+          <p class="description-readonly">{{ draft()!.description }}</p>
+        </div>
+      }
+
+      <div class="field comments">
+        <div class="comments-header">
+          <span class="field-label">Commentaires</span>
+          <button class="add-comment" (click)="commentPopupOpen.set(true)">
+            + Ajouter un commentaire
+          </button>
+        </div>
+
+        @if (!draft()!.comments?.length) {
+          <p class="no-comments">Aucun commentaire pour l'instant.</p>
+        } @else {
+          <div class="comment-list">
+            @for (comment of draft()!.comments; track comment.date) {
+              <div class="comment-item">
+                <p class="comment-date">{{ comment.date | date: 'dd/MM/yyyy à HH:mm' }}</p>
+                <p class="comment-text">{{ comment.text }}</p>
               </div>
             }
-          } @else {
-            <p class="no-comments">Aucune progression enregistrée.</p>
-          }
-        </div>
-      }
-
-      <div class="format-group">
-        <button [class.active]="draft()!.format === 'physique'" (click)="setFormat('physique')">
-          Papier
-        </button>
-        <button [class.active]="draft()!.format === 'liseuse'" (click)="setFormat('liseuse')">
-          Liseuse
-        </button>
-      </div>
-    </div>
-
-    <div class="field rating">
-      <span class="field-label" id="rating-label">Note</span>
-      <div class="stars" aria-labelledby="rating-label">
-        @for (i of [1, 2, 3, 4, 5]; track i) {
-          <span
-            [class.filled]="(draft()!.rating ?? 0) >= i"
-            tabindex="0"
-            role="button"
-            [attr.aria-label]="'Note ' + i + ' étoiles'"
-            (click)="setRating(i)"
-            (keydown.enter)="setRating(i)"
-            >★</span
-          >
+          </div>
         }
       </div>
-    </div>
-
-    @if (draft()!.genres?.length) {
-      <span class="field-label">Genres</span>
-      <div class="genres-readonly">
-        @for (genre of draft()!.genres; track genre) {
-          <span class="genre-chip">{{ genre }}</span>
-        }
-      </div>
-    }
-
-    <div class="field dates">
-      <p>Ajouté le : {{ draft()!.dateAdded | date: 'dd/MM/yyyy' }}</p>
-      @if (draft()!.dateStarted) {
-        <p>Commencé le : {{ draft()!.dateStarted | date: 'dd/MM/yyyy' }}</p>
-      }
-      @if (draft()!.dateFinished) {
-        <p>Terminé le : {{ draft()!.dateFinished | date: 'dd/MM/yyyy' }}</p>
-      }
-    </div>
-
-    @if (draft()!.description) {
-      <div class="field">
-        <span class="field-label">Résumé</span>
-        <p class="description-readonly">{{ draft()!.description }}</p>
-      </div>
-    }
-
-    <div class="field comments">
-      <div class="comments-header">
-        <span class="field-label">Commentaires</span>
-        <button class="add-comment" (click)="commentPopupOpen.set(true)">
-          + Ajouter un commentaire
-        </button>
-      </div>
-
-      @if (!draft()!.comments?.length) {
-        <p class="no-comments">Aucun commentaire pour l'instant.</p>
-      } @else {
-        <div class="comment-list">
-          @for (comment of draft()!.comments; track comment.date) {
-            <div class="comment-item">
-              <p class="comment-date">{{ comment.date | date: 'dd/MM/yyyy à HH:mm' }}</p>
-              <p class="comment-text">{{ comment.text }}</p>
-            </div>
-          }
-        </div>
-      }
-    </div>
-
-    @if (commentPopupOpen()) {
-      <app-comment-popup
-        (commentAdded)="onCommentAdded($event)"
-        (closed)="commentPopupOpen.set(false)"
-      ></app-comment-popup>
-    }
-
-    @if (deleteConfirmOpen()) {
-      <app-delete-confirm-popup
-        [bookTitle]="draft()!.title"
-        (confirmed)="onDeleteConfirmed()"
-        (closed)="deleteConfirmOpen.set(false)"
-      ></app-delete-confirm-popup>
-    }
-
-    @if (progressPopupOpen()) {
-      <app-progress-popup
-        (progressAdded)="onProgressAdded($event)"
-        (closed)="progressPopupOpen.set(false)"
-      ></app-progress-popup>
-    }
-
-    <div class="actions">
-      <button class="save" (click)="save()">Enregistrer</button>
-    </div>
-  } @else {
-    <!-- MODE ÉDITION : tous les champs modifiables -->
-    <div class="cover-section">
-      <img [src]="draft()!.coverUrl || 'assets/placeholder-cover.png'" alt="" />
-      <input
-        type="text"
-        placeholder="URL de la couverture"
-        [ngModel]="draft()!.coverUrl"
-        (ngModelChange)="updateField('coverUrl', $event)"
-      />
-    </div>
-
-    <input
-      class="title-input"
-      type="text"
-      placeholder="Titre"
-      [ngModel]="draft()!.title"
-      (ngModelChange)="updateField('title', $event)"
-    />
-
-    <input
-      class="author-input"
-      type="text"
-      placeholder="Auteur"
-      [ngModel]="draft()!.author"
-      (ngModelChange)="updateField('author', $event)"
-    />
-
-    <div class="field pagecount-field">
-      <label for="pagecount-input">Nombre de pages</label>
-      <div class="pagecount-wrapper">
-        <input
-          id="pagecount-input"
-          class="pagecount-input"
-          type="number"
-          min="0"
-          [ngModel]="draft()!.pageCount"
-          (ngModelChange)="updateField('pageCount', $event ? +$event : undefined)"
-        />
-        <span class="pagecount-unit">pages</span>
-      </div>
-    </div>
-
-    <div class="field">
-      <span class="field-label" id="genres-label">Genres</span>
-      <div class="genre-picker" aria-labelledby="genres-label">
-        @for (genre of availableGenres(); track genre) {
-          <button
-            type="button"
-            class="genre-chip-toggle"
-            [class.selected]="isGenreSelected(genre)"
-            (click)="toggleGenre(genre)"
-          >
-            {{ genre }}
-          </button>
-        }
-      </div>
-
-      <div class="genre-add">
+    } @else {
+      <!-- MODE ÉDITION : tous les champs modifiables -->
+      <div class="cover-section">
+        <img [src]="draft()!.coverUrl || 'assets/placeholder-cover.png'" alt="" />
         <input
           type="text"
-          placeholder="Nouveau genre..."
-          [ngModel]="newGenreText()"
-          (ngModelChange)="newGenreText.set($event)"
-          (keyup.enter)="addNewGenre()"
+          placeholder="URL de la couverture"
+          [ngModel]="draft()!.coverUrl"
+          (ngModelChange)="updateField('coverUrl', $event)"
         />
-        <button type="button" (click)="addNewGenre()">Ajouter</button>
       </div>
-    </div>
 
-    <div class="field">
-      <app-date-picker
-        label="Ajouté le"
-        [selectedDate]="draft()!.dateAdded"
-        (dateSelected)="updateField('dateAdded', $event)"
-      ></app-date-picker>
-    </div>
+      <input
+        class="title-input"
+        type="text"
+        placeholder="Titre"
+        [ngModel]="draft()!.title"
+        (ngModelChange)="updateField('title', $event)"
+      />
 
-    @if (draft()!.status !== 'to-read') {
+      <input
+        class="author-input"
+        type="text"
+        placeholder="Auteur"
+        [ngModel]="draft()!.author"
+        (ngModelChange)="updateField('author', $event)"
+      />
+
+      <div class="field pagecount-field">
+        <label for="pagecount-input">Nombre de pages</label>
+        <div class="pagecount-wrapper">
+          <input
+            id="pagecount-input"
+            class="pagecount-input"
+            type="number"
+            min="0"
+            [ngModel]="draft()!.pageCount"
+            (ngModelChange)="updateField('pageCount', $event ? +$event : undefined)"
+          />
+          <span class="pagecount-unit">pages</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="field-label" id="genres-label">Genres</span>
+        <div class="genre-picker" aria-labelledby="genres-label">
+          @for (genre of availableGenres(); track genre) {
+            <button
+              type="button"
+              class="genre-chip-toggle"
+              [class.selected]="isGenreSelected(genre)"
+              (click)="toggleGenre(genre)"
+            >
+              {{ genre }}
+            </button>
+          }
+        </div>
+
+        <div class="genre-add">
+          <input
+            type="text"
+            placeholder="Nouveau genre..."
+            [ngModel]="newGenreText()"
+            (ngModelChange)="newGenreText.set($event)"
+            (keyup.enter)="addNewGenre()"
+          />
+          <button type="button" (click)="addNewGenre()">Ajouter</button>
+        </div>
+      </div>
+
       <div class="field">
         <app-date-picker
-          label="Commencé le"
-          [selectedDate]="draft()!.dateStarted"
-          (dateSelected)="updateField('dateStarted', $event)"
+          label="Ajouté le"
+          [selectedDate]="draft()!.dateAdded"
+          (dateSelected)="updateField('dateAdded', $event)"
         ></app-date-picker>
       </div>
+
+      @if (draft()!.status !== 'to-read') {
+        <div class="field">
+          <app-date-picker
+            label="Commencé le"
+            [selectedDate]="draft()!.dateStarted"
+            (dateSelected)="updateField('dateStarted', $event)"
+          ></app-date-picker>
+        </div>
+      }
+
+      <div class="field">
+        <label for="description-input">Résumé</label>
+        <textarea
+          id="description-input"
+          class="auto-grow"
+          rows="3"
+          [ngModel]="draft()!.description"
+          (ngModelChange)="updateField('description', $event)"
+        ></textarea>
+      </div>
     }
+  </div>
 
-    <div class="field">
-      <label for="description-input">Résumé</label>
-      <textarea
-        id="description-input"
-        class="auto-grow"
-        rows="3"
-        [ngModel]="draft()!.description"
-        (ngModelChange)="updateField('description', $event)"
-      ></textarea>
-    </div>
+  @if (draft()) {
+    @if (!editMode()) {
+      <div class="detail-footer">
+        <button class="save" (click)="save()">Enregistrer</button>
+      </div>
+    } @else {
+      <div class="detail-footer">
+        <button class="save" (click)="save()">Enregistrer</button>
+        <button class="cancel" (click)="cancelEdit()">Annuler</button>
+      </div>
+    }
+  }
 
-    <div class="actions">
-      <button class="save" (click)="save()">Enregistrer</button>
-      <button class="cancel" (click)="cancelEdit()">Annuler</button>
-    </div>
+  @if (commentPopupOpen()) {
+    <app-comment-popup
+      (commentAdded)="onCommentAdded($event)"
+      (closed)="commentPopupOpen.set(false)"
+    ></app-comment-popup>
+  }
+
+  @if (deleteConfirmOpen()) {
+    <app-delete-confirm-popup
+      [bookTitle]="draft()!.title"
+      (confirmed)="onDeleteConfirmed()"
+      (closed)="deleteConfirmOpen.set(false)"
+    ></app-delete-confirm-popup>
+  }
+
+  @if (progressPopupOpen()) {
+    <app-progress-popup
+      (progressAdded)="onProgressAdded($event)"
+      (closed)="progressPopupOpen.set(false)"
+    ></app-progress-popup>
   }
 </div>
