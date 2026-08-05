@@ -3,10 +3,11 @@ import { BookSearch, GoogleBookResult } from '../../../core/services/book-search
 import { BookDb } from '../../../core/services/book-db/book-db';
 import { Book } from '../../../core/models/book';
 import { FormsModule } from '@angular/forms';
+import { ManualAddForm } from '../manual-add-form/manual-add-form';
 
 @Component({
   selector: 'app-book-lookup',
-  imports: [FormsModule],
+  imports: [FormsModule, ManualAddForm],
   templateUrl: './book-lookup.html',
   styleUrl: './book-lookup.scss',
 })
@@ -28,6 +29,12 @@ export class BookLookup {
   bookAdded = output<void>();
 
   error = signal<string | null>(null);
+
+  manualFormOpen = signal(false);
+
+  onManualBookAdded() {
+    this.manualFormOpen.set(false);
+  }
 
   search() {
     const q = this.query().trim();

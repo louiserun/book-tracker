@@ -6,8 +6,8 @@
     [ngModel]="text()"
     (ngModelChange)="text.set($event)"
   ></textarea>
-  <div class="popup-actions">
-    <button class="save" (click)="save()">Enregistrer</button>
+  <div popup-footer class="popup-actions">
+    <button class="save" (click)="save()">Ajouter</button>
     <button class="cancel" (click)="close()">Annuler</button>
   </div>
 </app-popup>

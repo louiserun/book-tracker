@@ -12,6 +12,10 @@
     <button (click)="search()">Rechercher</button>
   </div>
 
+  <button type="button" class="manual-add-toggle" (click)="manualFormOpen.set(true)">
+    + Ajouter manuellement
+  </button>
+
   @if (loading()) {
     <p class="status">Recherche en cours...</p>
   }
@@ -39,4 +43,11 @@
       </div>
     }
   </div>
+
+  @if (manualFormOpen()) {
+    <app-manual-add-form
+      (bookAdded)="onManualBookAdded()"
+      (closed)="manualFormOpen.set(false)"
+    ></app-manual-add-form>
+  }
 </div>

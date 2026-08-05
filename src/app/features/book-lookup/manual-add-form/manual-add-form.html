@@ -1,0 +1,104 @@
+<app-popup title="Ajouter un livre manuellement" (closed)="close()">
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  }
+
+  <div class="field">
+    <label for="manual-title">Titre *</label>
+    <input id="manual-title" type="text" [ngModel]="title()" (ngModelChange)="title.set($event)" />
+  </div>
+
+  <div class="field">
+    <label for="manual-author">Auteur *</label>
+    <input
+      id="manual-author"
+      type="text"
+      [ngModel]="author()"
+      (ngModelChange)="author.set($event)"
+    />
+  </div>
+
+  <div class="field">
+    <span class="field-label">Format</span>
+    <div class="format-group">
+      <button
+        type="button"
+        [class.active]="format() === 'physique'"
+        (click)="setFormat('physique')"
+      >
+        Papier
+      </button>
+      <button type="button" [class.active]="format() === 'liseuse'" (click)="setFormat('liseuse')">
+        Liseuse
+      </button>
+    </div>
+  </div>
+
+  <div class="field">
+    <span class="field-label" id="manual-genres-label">Genres</span>
+    <div class="genre-picker" aria-labelledby="manual-genres-label">
+      @for (genre of availableGenres(); track genre) {
+        <button
+          type="button"
+          class="genre-chip-toggle"
+          [class.selected]="isGenreSelected(genre)"
+          (click)="toggleGenre(genre)"
+        >
+          {{ genre }}
+        </button>
+      }
+    </div>
+
+    <div class="genre-add">
+      <input
+        type="text"
+        placeholder="Nouveau genre..."
+        [ngModel]="newGenreText()"
+        (ngModelChange)="newGenreText.set($event)"
+        (keyup.enter)="addNewGenre()"
+      />
+      <button type="button" (click)="addNewGenre()">Ajouter</button>
+    </div>
+  </div>
+
+  <div class="field pagecount-field">
+    <label for="manual-pagecount">Nombre de pages</label>
+    <div class="pagecount-wrapper">
+      <input
+        id="manual-pagecount"
+        class="pagecount-input"
+        type="number"
+        min="0"
+        [ngModel]="pageCount()"
+        (ngModelChange)="pageCount.set($event)"
+      />
+      <span class="pagecount-unit">pages</span>
+    </div>
+  </div>
+
+  <div class="field">
+    <label for="manual-cover">URL de la couverture</label>
+    <input
+      id="manual-cover"
+      type="text"
+      placeholder="https://..."
+      [ngModel]="coverUrl()"
+      (ngModelChange)="coverUrl.set($event)"
+    />
+  </div>
+
+  <div class="field">
+    <label for="manual-description">Résumé</label>
+    <textarea
+      id="manual-description"
+      rows="3"
+      [ngModel]="description()"
+      (ngModelChange)="description.set($event)"
+    ></textarea>
+  </div>
+
+  <div popup-footer class="popup-actions">
+    <button class="save" (click)="save()">Ajouter</button>
+    <button class="cancel" (click)="close()">Annuler</button>
+  </div>
+</app-popup>
